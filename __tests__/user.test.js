@@ -38,7 +38,7 @@ describe('Testing User Models', () => {
 
   });
 
-  it('should create new user', async () => {
+  it('should signup new user', async () => {
     const res = await agent.post('/api/auth/signup').send(userData);
 
     expect(res.body).toEqual({
@@ -60,8 +60,29 @@ describe('Testing User Models', () => {
       email: userData.email,
       password: userData.password
     });
+
     expect(res.body).toEqual({
       message: 'Signed In Successfully'
+    });
+  });
+
+  it('should return user info', async () => {
+    await agent.post('/api/auth/signup').send(userData);
+    await agent.post('/api/auth/login').send({
+      email: userData.email,
+      password: userData.password
+    });
+    const res = await agent.get('/api/auth/me');
+
+    expect(res.body).toEqual({
+      _id: expect.any(String),
+      name: expect.any(String),
+      username: expect.any(String),
+      email: expect.any(String),
+      password: expect.any(String),
+      createdAt: expect.any(String),
+      updatedAt: expect.any(String),
+      __v: expect.any(Number)
     });
   });
 });
