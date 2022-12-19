@@ -72,6 +72,8 @@ describe('Testing User Models', () => {
       email: userData.email,
       password: userData.password
     });
+
+    //me route returns profile info
     const res = await agent.get('/api/auth/me');
 
     expect(res.body).toEqual({
