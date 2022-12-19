@@ -54,10 +54,10 @@ describe('Testing User Models', () => {
   });
 
   it('should log in existing user', async () => {
-    await agent.post('/api/auth/signup').send(userData);
+    const newUser = await agent.post('/api/auth/signup').send(userData);
 
     const res = await agent.post('/api/auth/login').send({
-      email: userData.email,
+      email: newUser._body.email,
       password: userData.password
     });
 
@@ -67,9 +67,9 @@ describe('Testing User Models', () => {
   });
 
   it('should return user info', async () => {
-    await agent.post('/api/auth/signup').send(userData);
+    const user = await agent.post('/api/auth/signup').send(userData);
     await agent.post('/api/auth/login').send({
-      email: userData.email,
+      email: user._body.email,
       password: userData.password
     });
 
@@ -86,5 +86,32 @@ describe('Testing User Models', () => {
       updatedAt: expect.any(String),
       __v: expect.any(Number)
     });
+  });
+
+  it('Allows user to edit info', async () => {
+    const user = await agent.post('/api/auth/signup').send(userData);
+    await agent.post('/api/auth/login').send({
+      email: user._body.email,
+      password: userData.password
+    });
+
+    const res = await agent.put(`/api/auth/${user._body._id}`).send({
+      username: 'royal'
+    });
+    expect(res.body.username).toBe('royal');
+
+  });
+
+  it('should logout a user', async () => {
+    const user = await agent.post('/api/auth/signup').send(userData);
+    await agent.post('/api/auth/login').send({
+      email: user._body.email,
+      password: userData.password
+    });
+
+    const res = await agent.delete('/api/auth/signout');
+
+    expect(res.body).toEqual({});
+
   });
 });
