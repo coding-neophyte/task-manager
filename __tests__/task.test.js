@@ -64,4 +64,22 @@ describe('Testing Task Route and Model', () => {
     expect(res.body.userId).toBe(user._body._id);
     expect(res.body.completed).toBe(false);
   });
+  it('should get single task by id', async () => {
+    const user = await agent.post('/api/auth/signup').send(userData);
+    const newTask = await agent.post('/api/task').send({
+      title: 'Study',
+      description: 'study dsa for two hours',
+      userId: user._body._id
+    });
+
+
+    const res = await agent.get(`/api/task/${newTask._body._id}`);
+
+    expect(res.body._id).toBe(newTask._body._id);
+    expect(res.body.title).toBe(newTask._body.title);
+    expect(res.body.description).toBe(newTask._body.description);
+    expect(res.body.userId).toEqual(user._body._id);
+    expect(res.body.completed).toBe(false);
+
+  });
 });
