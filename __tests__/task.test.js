@@ -140,4 +140,20 @@ describe('Testing Task Route and Model', () => {
 
     expect(res.body).toEqual({});
   });
+
+  it('should return error if user isnt logged in', async () => {
+    const task2 = {
+      title: 'clean car',
+      description: 'take car to car wash',
+      userId: 'id'
+    };
+    const res = await request(app).post('/api/task').send(task2);
+
+    expect(res.body).toEqual({
+      message: 'Sign In Required',
+      status: 401
+    });
+
+
+  });
 });
