@@ -82,4 +82,28 @@ describe('Testing Task Route and Model', () => {
     expect(res.body.completed).toBe(false);
 
   });
+
+  it('should return list of user task', async () => {
+    const user = await agent.post('/api/auth/signup').send(userData);
+
+
+    const task1 = {
+      title: 'clean house',
+      description: 'clean up for afterwork',
+      userId: user._body._id
+    };
+
+    const task2 = {
+      title: 'clean car',
+      description: 'take car to car wash',
+      userId: user._body._id
+    };
+
+    await agent.post('/api/task').send(task1);
+    await agent.post('/api/task').send(task2);
+
+    const res = await agent.get('/api/task');
+
+    expect(res.body).toHaveLength(2);
+  });
 });
