@@ -106,4 +106,38 @@ describe('Testing Task Route and Model', () => {
 
     expect(res.body).toHaveLength(2);
   });
+
+  it('should allow user to update task', async () => {
+    const user = await agent.post('/api/auth/signup').send(userData);
+    const task1 = {
+      title: 'clean house',
+      description: 'clean up for afterwork',
+      userId: user._body._id
+    };
+
+    const newTask = await agent.post('/api/task').send(task1);
+
+    const res = await agent.put(`/api/task/${newTask._body._id}`).send({
+      completed: true
+
+    });
+
+    expect(res.body.completed).toBe(true);
+
+  });
+
+  it('should allow user to delete a task', async () => {
+    const user = await agent.post('/api/auth/post').send(userData);
+    const task2 = {
+      title: 'clean car',
+      description: 'take car to car wash',
+      userId: user._body._id
+    };
+
+    const newTask = await agent.post('/api/task').send(task2);
+
+    const res = await agent.delete(`/api/task/${newTask._body._id}`);
+
+    expect(res.body).toEqual({});
+  });
 });
